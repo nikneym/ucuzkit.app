@@ -1,4 +1,4 @@
-package main
+package bookscraper
 
 // FIXME: should price be stored as a string or as a decimal value?
 type book struct {

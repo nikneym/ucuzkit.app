@@ -1,15 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"os"
+
+	"github.com/nikneym/ucuzkit.app/bookscraper"
+)
 
 func main() {
-	bs := NewBookScraper(5)
-	bs.ScrapeAll([]Scraper{
-		&Dr{},
-		&Idefix{},
-		&Ilknokta{},
-		&Kitapyurdu{},
+	bs := bookscraper.New(5)
+	bs.ScrapeAll("1984", []bookscraper.Scraper{
+		&bookscraper.Dr{},
+		&bookscraper.Idefix{},
+		&bookscraper.Ilknokta{},
+		&bookscraper.Kitapyurdu{},
 	})
 
-	fmt.Println(bs.stores)
+	bs.AsJSON(os.Stdout)
 }

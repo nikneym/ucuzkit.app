@@ -1,4 +1,4 @@
-package main
+package bookscraper
 
 type Scraper interface {
 	Scrape(ch chan Response, books []book, query string)

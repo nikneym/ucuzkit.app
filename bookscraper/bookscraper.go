@@ -1,8 +1,10 @@
-package main
+package bookscraper
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/url"
 	"sync"
@@ -15,7 +17,7 @@ type BookScraper struct {
 	allocationSize int
 }
 
-func NewBookScraper(allocationSize int) *BookScraper {
+func New(allocationSize int) *BookScraper {
 	return &BookScraper{
 		stores:         make(map[string][]book),
 		ctx:            context.Background(),
@@ -80,4 +82,8 @@ func (bs *BookScraper) ScrapeAll(s string, scrapers []Scraper) {
 			return
 		}
 	}
+}
+
+func (bs *BookScraper) AsJSON(w io.Writer) error {
+	return json.NewEncoder(w).Encode(bs.stores)
 }
