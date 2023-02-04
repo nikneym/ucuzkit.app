@@ -25,7 +25,6 @@ func (s *Kitapyurdu) Scrape(ch chan Response, books []book, query string) {
 	i := 0
 	c.OnHTML("ul.product-grid .product-cr, #product-table .product-cr", func(h *colly.HTMLElement) {
 		if i == len(books) {
-			ch <- Response{scraper: s, err: nil}
 			return
 		}
 
@@ -45,14 +44,5 @@ func (s *Kitapyurdu) Scrape(ch chan Response, books []book, query string) {
 		ch <- Response{scraper: s, err: err}
 	})
 
-	// success
-	c.OnScraped(func(r *colly.Response) {
-		ch <- Response{scraper: s, err: nil}
-	})
-
-	err := c.Visit(fmt.Sprintf("https://www.kitapyurdu.com/index.php?route=product/search&filter_name=%s&fuzzy=0&filter_product_type=1&filter_in_shelf=1", query))
-	if err != nil {
-		ch <- Response{scraper: s, err: err}
-		return
-	}
+	c.Visit(fmt.Sprintf("https://www.kitapyurdu.com/index.php?route=product/search&filter_name=%s&fuzzy=0&filter_product_type=1&filter_in_shelf=1", query))
 }

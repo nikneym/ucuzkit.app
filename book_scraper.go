@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"log"
+	"sync"
 	"time"
 )
 
@@ -23,7 +26,9 @@ func (bs *BookScraper) ScrapeAll(scrapers []Scraper) {
 	ctx, cancel := context.WithTimeout(bs.ctx, time.Second*1)
 	defer cancel()
 
-	ch := make(chan Response)
+	respCh := make(chan Response)
+	wg := &sync.WaitGroup{}
+	wg.Add(len(scrapers))
 
 	for _, s := range scrapers {
 		name := s.GetName()
@@ -36,29 +41,40 @@ func (bs *BookScraper) ScrapeAll(scrapers []Scraper) {
 		bs.stores[name] = make([]book, bs.allocationSize)
 
 		// run each scraper in a separate goroutine
-		go s.Scrape(ch, bs.stores[name], "1984")
+		go func(s Scraper) {
+			s.Scrape(respCh, bs.stores[name], "1984")
+			wg.Done()
+		}(s)
 	}
 
-	//tasksDone := 0
-	//length := len(scrapers)
+	// wait for finish here
+	isDoneCh := make(chan int)
+	go func() {
+		wg.Wait()
+		close(isDoneCh)
+	}()
+
 	for {
 		select {
+		// time's up
 		case <-ctx.Done():
 			if err := ctx.Err(); err != nil {
 				return
 			}
 
-			//case resp := <-ch:
-			//	if resp.err != nil {
-			//		log.Fatal(resp.err)
-			//		return
-			//	}
-			//
-			//	if tasksDone > length {
-			//		return
-			//	}
-			//
-			//	tasksDone++
+		// this channel tracks errors that've been occurred in goroutines
+		case resp := <-respCh:
+			if resp.err != nil {
+				bs.stores[resp.scraper.GetName()] = nil
+				log.Printf("%s -> %s", resp.scraper.GetName(), resp.err)
+				continue
+			}
+
+			panic(fmt.Sprintf("received `Response` without error from `%s`", resp.scraper.GetName()))
+
+		// `wg.Wait()` is finished
+		case <-isDoneCh:
+			return
 		}
 	}
 }

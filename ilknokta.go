@@ -25,7 +25,6 @@ func (s *Ilknokta) Scrape(ch chan Response, books []book, query string) {
 	i := 0
 	c.OnHTML("ul li.items_col .home_item_prd", func(h *colly.HTMLElement) {
 		if i == len(books) {
-			ch <- Response{scraper: s, err: nil}
 			return
 		}
 
@@ -43,17 +42,9 @@ func (s *Ilknokta) Scrape(ch chan Response, books []book, query string) {
 
 	// fail
 	c.OnError(func(r *colly.Response, err error) {
+		fmt.Println("reached")
 		ch <- Response{scraper: s, err: err}
 	})
 
-	// success
-	c.OnScraped(func(r *colly.Response) {
-		ch <- Response{scraper: s, err: nil}
-	})
-
-	err := c.Visit(fmt.Sprintf("https://www.ilknokta.com/index.php?p=Products&q_field_active=0&q=%s&search=&q_field=", query))
-	if err != nil {
-		ch <- Response{scraper: s, err: err}
-		return
-	}
+	c.Visit(fmt.Sprintf("https://www.ilknokta.com/index.php?p=Products&q_field_active=0&q=%s&search=&q_field=", query))
 }
