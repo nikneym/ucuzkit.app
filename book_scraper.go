@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/url"
 	"sync"
 	"time"
 )
@@ -22,13 +23,15 @@ func NewBookScraper(allocationSize int) *BookScraper {
 	}
 }
 
-func (bs *BookScraper) ScrapeAll(scrapers []Scraper) {
-	ctx, cancel := context.WithTimeout(bs.ctx, time.Second*1)
+func (bs *BookScraper) ScrapeAll(s string, scrapers []Scraper) {
+	ctx, cancel := context.WithTimeout(bs.ctx, time.Second*3)
 	defer cancel()
 
 	respCh := make(chan Response)
 	wg := &sync.WaitGroup{}
 	wg.Add(len(scrapers))
+
+	q := url.QueryEscape(s)
 
 	for _, s := range scrapers {
 		name := s.GetName()
@@ -42,7 +45,7 @@ func (bs *BookScraper) ScrapeAll(scrapers []Scraper) {
 
 		// run each scraper in a separate goroutine
 		go func(s Scraper) {
-			s.Scrape(respCh, bs.stores[name], "1984")
+			s.Scrape(respCh, bs.stores[name], q)
 			wg.Done()
 		}(s)
 	}
