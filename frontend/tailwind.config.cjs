@@ -9,6 +9,10 @@ module.exports = {
       fontFamily: {
         zilla: "Zilla Slab, serif",
       },
+
+      boxShadow: {
+        "inner-xl": "inset 0px 0px 20px 1px rgba(36,36,36,1)",
+      },
     },
   },
   plugins: [],
