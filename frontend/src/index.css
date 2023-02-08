@@ -17,7 +17,8 @@
 }
 
 body {
-  background-color: #262626;
+  /*background-color: #262626;*/
+  background-color: #e5e5e5;
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
@@ -45,7 +46,7 @@ button:focus-visible {
 }
 
 .wave {
-  height: 8em;
+  height: 7em;
   --mask:
     radial-gradient(78.10px at 50% calc(100% - 110.00px),#000 99%,#0000 101%) calc(50% - 100px) 0/200px 100%,
     radial-gradient(78.10px at 50% calc(100% + 60.00px),#0000 99%,#000 101%) 50% calc(100% - 50px)/200px 100% repeat-x;
