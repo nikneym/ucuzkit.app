@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Rubik', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -17,10 +17,8 @@
 }
 
 body {
-  background-color: #242424;
+  background-color: #262626;
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -44,4 +42,13 @@ button {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.wave {
+  height: 8em;
+  --mask:
+    radial-gradient(78.10px at 50% calc(100% - 110.00px),#000 99%,#0000 101%) calc(50% - 100px) 0/200px 100%,
+    radial-gradient(78.10px at 50% calc(100% + 60.00px),#0000 99%,#000 101%) 50% calc(100% - 50px)/200px 100% repeat-x;
+  -webkit-mask: var(--mask);
+          mask: var(--mask);
 }
