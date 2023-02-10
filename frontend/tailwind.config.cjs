@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         zilla: "Zilla Slab, serif",
+        itim: "Itim, cursive",
       },
 
       boxShadow: {
